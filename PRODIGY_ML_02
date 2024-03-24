@@ -1,0 +1,57 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+from sklearn.cluster import KMeans
+df=pd.read_csv('/kaggle/input/customer-segmentation-tutorial-in-python/Mall_Customers.csv',index_col='CustomerID')
+df.head()
+
+fig,ax=plt.subplots(2,figsize=(5,10))
+sns.scatterplot(ax=ax[0],data=df,x='Age',y='Spending Score (1-100)',hue='Gender')
+sns.scatterplot(ax=ax[1],data=df,x='Annual Income (k$)',y='Spending Score (1-100)',hue='Gender')
+plt.show()
+
+km=KMeans(n_clusters=5)
+df['cluster']=km.fit_predict(df[['Annual Income (k$)','Spending Score (1-100)']])
+df.head()
+
+km.cluster_centers_
+
+km.inertia_
+
+df['cluster'].unique()
+
+df0=df[df['cluster']==0][['Annual Income (k$)','Spending Score (1-100)','cluster']]
+df1=df[df['cluster']==1][['Annual Income (k$)','Spending Score (1-100)','cluster']]
+df2=df[df['cluster']==2][['Annual Income (k$)','Spending Score (1-100)','cluster']]
+df3=df[df['cluster']==3][['Annual Income (k$)','Spending Score (1-100)','cluster']]
+df4=df[df['cluster']==4][['Annual Income (k$)','Spending Score (1-100)','cluster']]
+sns.scatterplot(data=df0,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df1,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df2,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df3,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df4,x='Annual Income (k$)',y='Spending Score (1-100)')
+plt.show()
+
+sse=[]
+for k in range(1,20):
+    kmk=KMeans(n_clusters=k)
+    kmk.fit(df[['Annual Income (k$)','Spending Score (1-100)']])
+    sse.append(kmk.inertia_)
+sse
+
+sns.lineplot(data=sse)
+sns.scatterplot(data=sse)
+plt.grid(True)
+plt.xlabel('Number of Clusters')
+plt.ylabel('Sum of Squared Error')
+plt.title('Elbow Chart')
+plt.show()
+
+sns.scatterplot(data=df0,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df1,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df2,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df3,x='Annual Income (k$)',y='Spending Score (1-100)')
+sns.scatterplot(data=df4,x='Annual Income (k$)',y='Spending Score (1-100)')
+plt.show()
+
